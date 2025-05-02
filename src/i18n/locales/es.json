@@ -44,15 +44,43 @@
     "title": "Productos",
     "search": "Buscar productos",
     "noResults": "No se encontraron productos",
-    "outOfStock": "Este producto está agotado",
-    "lowStock": "Quedan solo {stock} en stock",
     "tryDifferentSearch": "Intenta con una búsqueda diferente o elimina los filtros",
     "clearFilters": "Limpiar filtros",
     "stock": "Stock: {stock}",
+    "lowStock": "Quedan solo {stock} en stock",
+    "outOfStock": "Este producto ya está agotado",
     "addToCart": "Añadir al carrito",
     "addedToCart": "Producto añadido al carrito",
     "errorAddingToCart": "Error al añadir al carrito",
     "loginRequired": "Debes iniciar sesión para añadir productos al carrito"
+  },
+  "cart": {
+    "title": "Carrito de compras",
+    "empty": "Tu carrito está vacío",
+    "emptyMessage": "Añade algunos productos para comenzar a comprar",
+    "continueShopping": "Continuar comprando",
+    "checkout": "Finalizar compra",
+    "subtotal": "Subtotal",
+    "taxesIncluded": "Impuestos incluidos",
+    "total": "Total",
+    "remove": "Eliminar",
+    "quantity": "Cantidad",
+    "update": "Actualizar",
+    "clear": "Vaciar carrito"
+  },
+  "checkout": {
+    "title": "Finalizar compra",
+    "description": "Revisa tu pedido y completa el pago",
+    "orderSummary": "Resumen del pedido",
+    "quantity": "Cantidad",
+    "total": "Total",
+    "paymentMethod": "Método de pago",
+    "creditCard": "Tarjeta de crédito",
+    "paypal": "PayPal",
+    "placeOrder": "Realizar pedido",
+    "backToCart": "Volver al carrito",
+    "orderSuccess": "¡Pedido realizado con éxito!",
+    "orderError": "Error al procesar el pedido"
   },
   "profile": {
     "title": "Perfil",
@@ -91,6 +119,7 @@
     "serverError": "Error del servidor. Por favor, intenta más tarde.",
     "validation": "Error de validación. Por favor, verifica los datos ingresados.",
     "timeout": "La solicitud ha excedido el tiempo de espera. Por favor, intenta nuevamente.",
-    "unknown": "Error desconocido. Por favor, intenta nuevamente."
+    "unknown": "Error desconocido. Por favor, intenta nuevamente.",
+    "success": "Operación completada con éxito."
   }
 }

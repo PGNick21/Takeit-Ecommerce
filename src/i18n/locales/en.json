@@ -44,15 +44,43 @@
     "title": "Products",
     "search": "Search products",
     "noResults": "No products found",
-    "outOfStock": "This product is out of stock",
-    "lowStock": "Only {stock} left in stock",
     "tryDifferentSearch": "Try a different search or clear filters",
     "clearFilters": "Clear filters",
     "stock": "Stock: {stock}",
+    "lowStock": "Only {stock} left!",
+    "outOfStock": "Out of stock",
     "addToCart": "Add to cart",
     "addedToCart": "Product added to cart",
     "errorAddingToCart": "Error adding to cart",
     "loginRequired": "You must be logged in to add products to cart"
+  },
+  "cart": {
+    "title": "Shopping Cart",
+    "empty": "Your cart is empty",
+    "emptyMessage": "Add some products to start shopping",
+    "continueShopping": "Continue shopping",
+    "checkout": "Checkout",
+    "subtotal": "Subtotal",
+    "taxesIncluded": "Taxes included",
+    "total": "Total",
+    "remove": "Remove",
+    "quantity": "Quantity",
+    "update": "Update",
+    "clear": "Clear cart"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "description": "Review your order and complete payment",
+    "orderSummary": "Order Summary",
+    "quantity": "Quantity",
+    "total": "Total",
+    "paymentMethod": "Payment Method",
+    "creditCard": "Credit Card",
+    "paypal": "PayPal",
+    "placeOrder": "Place Order",
+    "backToCart": "Back to Cart",
+    "orderSuccess": "Order placed successfully!",
+    "orderError": "Error processing order"
   },
   "profile": {
     "title": "Profile",
@@ -91,6 +119,7 @@
     "serverError": "Server error. Please try again later.",
     "validation": "Validation error. Please check your input.",
     "timeout": "Request timed out. Please try again.",
-    "unknown": "Unknown error. Please try again."
+    "unknown": "Unknown error. Please try again.",
+    "success": "Operation completed successfully."
   }
 }

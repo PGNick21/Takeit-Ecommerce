@@ -102,7 +102,7 @@
             <v-btn
               color="primary"
               variant="elevated"
-              @click="addToCart(product.id)"
+              @click="addToCart(product.uuid)"
               :disabled="product.stock === 0 || addingToCart[product.id]"
               :loading="addingToCart[product.id]"
             >
@@ -112,6 +112,16 @@
         </v-card>
       </v-col>
     </v-row>
+
+    <!-- Paginación -->
+    <div v-if="pagination.last_page > 1" class="d-flex justify-center mt-6">
+      <v-pagination
+        v-model="currentPage"
+        :length="pagination.last_page"
+        :total-visible="7"
+        @update:model-value="handlePageChange"
+      ></v-pagination>
+    </div>
   </div>
 </template>
 
@@ -128,16 +138,34 @@ const props = defineProps({
   }
 })
 
-const { products, isLoading, error, fetchProducts } = useProducts()
+const { products, isLoading, error, fetchProducts, pagination } = useProducts()
 const { addToCart: addProductToCart } = useCart()
 const { showError } = useErrorHandler()
 
 // Estado para controlar los productos que se están agregando al carrito
 const addingToCart = ref<Record<string, boolean>>({})
 
+// Control local de la página actual
+const currentPage = ref(1)
+
+// Manejar cambio de página
+const handlePageChange = (page: number) => {
+  currentPage.value = page
+  fetchProducts({
+    category_uuid: props.categoryId || undefined,
+    per_page: 12,
+    page: page
+  })
+}
+
 // Cargar productos cuando cambia la categoría
 watch(() => props.categoryId, () => {
-  fetchProducts(props.categoryId)
+  currentPage.value = 1 // Reset a la primera página
+  fetchProducts({
+    category_uuid: props.categoryId || undefined,
+    per_page: 12,
+    page: 1
+  })
 })
 
 // Formatear precio
@@ -150,7 +178,7 @@ const formatPrice = (price: number) => {
 
 // Agregar al carrito
 const addToCart = async (productId: string) => {
-  const product = products.value.find(p => p.id === productId)
+  const product = products.value.find(p => p.uuid === productId)
   
   if (!product) return
   
@@ -182,7 +210,11 @@ const addToCart = async (productId: string) => {
 }
 
 onMounted(() => {
-  fetchProducts(props.categoryId)
+  fetchProducts({
+    category_uuid: props.categoryId || undefined,
+    per_page: 12,
+    page: currentPage.value
+  })
 })
 </script>
 
@@ -199,6 +231,7 @@ onMounted(() => {
 .product-description {
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
