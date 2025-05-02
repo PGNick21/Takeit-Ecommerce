@@ -1,0 +1,96 @@
+{
+  "common": {
+    "search": "Buscar",
+    "retry": "Reintentar",
+    "error": "Error",
+    "loading": "Cargando...",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "view": "Ver",
+    "back": "Volver",
+    "next": "Siguiente",
+    "previous": "Anterior"
+  },
+  "auth": {
+    "login": "Iniciar sesión",
+    "loginDescription": "Inicia sesión para continuar",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "rememberMe": "Recordarme",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "noAccount": "¿No tienes una cuenta?",
+    "register": "Regístrate",
+    "logout": "Cerrar sesión",
+    "invalidCredentials": "Credenciales inválidas. Por favor, verifica tu correo y contraseña.",
+    "loginError": "Error al iniciar sesión",
+    "loginRequired": "Debes iniciar sesión para continuar"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Bienvenido",
+    "orders": "Pedidos",
+    "favorites": "Favoritos",
+    "notifications": "Notificaciones"
+  },
+  "categories": {
+    "title": "Categorías",
+    "all": "Todas las categorías",
+    "empty": "No hay categorías disponibles",
+    "error": "Error al cargar las categorías"
+  },
+  "products": {
+    "title": "Productos",
+    "search": "Buscar productos",
+    "noResults": "No se encontraron productos",
+    "outOfStock": "Este producto está agotado",
+    "lowStock": "Quedan solo {stock} en stock",
+    "tryDifferentSearch": "Intenta con una búsqueda diferente o elimina los filtros",
+    "clearFilters": "Limpiar filtros",
+    "stock": "Stock: {stock}",
+    "addToCart": "Añadir al carrito",
+    "addedToCart": "Producto añadido al carrito",
+    "errorAddingToCart": "Error al añadir al carrito",
+    "loginRequired": "Debes iniciar sesión para añadir productos al carrito"
+  },
+  "profile": {
+    "title": "Perfil",
+    "personalInfo": "Información personal",
+    "name": "Nombre",
+    "email": "Correo electrónico",
+    "updateProfile": "Actualizar perfil"
+  },
+  "settings": {
+    "title": "Configuración",
+    "language": "Idioma",
+    "theme": "Tema",
+    "notifications": "Notificaciones",
+    "privacy": "Privacidad"
+  },
+  "validation": {
+    "required": "Este campo es requerido",
+    "email": "El correo electrónico no es válido",
+    "minLength": "Este campo debe tener al menos {min} caracteres",
+    "passwordMatch": "Las contraseñas no coinciden"
+  },
+  "theme": {
+    "light": "Modo claro",
+    "dark": "Modo oscuro",
+    "system": "Usar configuración del sistema",
+    "selectMode": "Seleccionar modo",
+    "switchToLight": "Cambiar a modo claro",
+    "switchToDark": "Cambiar a modo oscuro"
+  },
+  "errors": {
+    "general": "Ha ocurrido un error",
+    "network": "Error de conexión. Por favor, verifica tu conexión a internet.",
+    "unauthorized": "No autorizado. Por favor, inicia sesión nuevamente.",
+    "forbidden": "No tienes permisos para acceder a este recurso.",
+    "notFound": "Recurso no encontrado.",
+    "serverError": "Error del servidor. Por favor, intenta más tarde.",
+    "validation": "Error de validación. Por favor, verifica los datos ingresados.",
+    "timeout": "La solicitud ha excedido el tiempo de espera. Por favor, intenta nuevamente.",
+    "unknown": "Error desconocido. Por favor, intenta nuevamente."
+  }
+}
