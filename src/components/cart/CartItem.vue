@@ -13,7 +13,7 @@
 
         <div v-for="(image, index) in item.product.images" :key="index">
             <v-img
-              :src="image"
+              :src="image.url"
               :alt="item.product.name"
               width="80"
               height="80"

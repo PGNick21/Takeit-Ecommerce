@@ -49,7 +49,7 @@
           :loading="addingToCart[product.id]"
         >
         <v-img
-        :src="product.images[0] || '/placeholder-product.png'"
+        :src="product?.image?.url"
         height="200"
         cover
         class="align-end"
@@ -89,8 +89,7 @@
           
           <v-card-text>
             <div class="d-flex justify-space-between align-center mb-2">
-              <div class="text-h6 font-weight-bold">{{ formatPrice(product.price) }}</div>
-              <div class="text-caption text-medium-emphasis">
+              <div class="text-h6 font-weight-bold">S/. {{ product.price }}</div>              <div class="text-caption text-medium-emphasis">
                 {{ $t('products.stock', { stock: product.stock }) }}
               </div>
             </div>
@@ -167,14 +166,6 @@ watch(() => props.categoryId, () => {
     page: 1
   })
 })
-
-// Formatear precio
-const formatPrice = (price: number) => {
-  return new Intl.NumberFormat('es-ES', {
-    style: 'currency',
-    currency: 'EUR'
-  }).format(price)
-}
 
 // Agregar al carrito
 const addToCart = async (productId: string) => {
