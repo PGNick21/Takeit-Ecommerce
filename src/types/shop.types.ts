@@ -12,7 +12,7 @@ export interface Category {
 }
 
 export interface Product {
-  id: number
+  id: string
   uuid: string
   name: string
   description: string

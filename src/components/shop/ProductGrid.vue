@@ -101,7 +101,7 @@
             <v-btn
               color="primary"
               variant="elevated"
-              @click="addToCart(product.uuid)"
+              @click="addToCart(product.id)"
               :disabled="product.stock === 0 || addingToCart[product.id]"
               :loading="addingToCart[product.id]"
             >
@@ -169,7 +169,7 @@ watch(() => props.categoryId, () => {
 
 // Agregar al carrito
 const addToCart = async (productId: string) => {
-  const product = products.value.find(p => p.uuid === productId)
+  const product = products.value.find(p => p.id === productId)
   
   if (!product) return
   
@@ -186,7 +186,7 @@ const addToCart = async (productId: string) => {
   addingToCart.value = { ...addingToCart.value, [productId]: true }
   
   try {
-    const success = await addProductToCart(productId, 1)
+    const success = await addProductToCart(product.id, 1)
     
     if (success) {
       // Mostrar mensaje de éxito
