@@ -1,40 +1,6 @@
 <template>
-  <div>
-    <!-- Estado de carga -->
-    <div v-if="isLoading" class="d-flex justify-center my-8">
-      <v-progress-circular indeterminate color="primary" size="64"></v-progress-circular>
-    </div>
-    
-    <!-- Mensaje de error -->
-    <v-alert
-      v-else-if="error"
-      type="error"
-      variant="tonal"
-      class="my-4"
-    >
-      {{ error }}
-      <template v-slot:append>
-        <v-btn variant="text" @click="fetchProducts">
-          {{ $t('common.retry') }}
-        </v-btn>
-      </template>
-    </v-alert>
-    
-    <!-- Sin resultados -->
-    <v-alert
-      v-else-if="products.length === 0"
-      type="info"
-      variant="tonal"
-      class="my-4"
-    >
-      {{ $t('products.noResults') }}
-      <div class="text-body-2 mt-2">
-        {{ $t('products.tryDifferentSearch') }}
-      </div>
-    </v-alert>
-    
-    <!-- Grid de productos -->
-    <v-row v-else>
+  <div class="product-grid">
+    <v-row>
       <v-col
         v-for="product in products"
         :key="product.id"
@@ -48,48 +14,48 @@
           :elevation="2"
           :loading="addingToCart[product.id]"
         >
-        <v-img
-        :src="product.images[0] || '/placeholder-product.png'"
-        height="200"
-        cover
-        class="align-end"
-        >
-          <!-- Chips de stock: siempre encima -->
-          <v-chip
-            v-if="product.stock <= 5 && product.stock > 0"
-            color="warning"
-            size="small"
-            class="ma-2"
-            style="position: relative; z-index: 2"
+          <v-img
+            :src="product?.image?.url"
+            height="200"
+            cover
+            class="align-end"
           >
-            {{ $t('products.lowStock', { stock: product.stock }) }}
-          </v-chip>
-          <v-chip
-            v-else-if="product.stock === 0"
-            color="error"
-            size="small"
-            class="ma-2"
-            style="position: relative; z-index: 2"
-          >
-            {{ $t('products.outOfStock') }}
-          </v-chip>
-        
-          <!-- Placeholder totalmente cubriendo, pero detrás -->
-          <template #placeholder>
-            <div
-              class="d-flex align-center justify-center fill-height"
-              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; background-color: #f5f5f5;"
+            <!-- Chips de stock: siempre encima -->
+            <v-chip
+              v-if="product.stock <= 5 && product.stock > 0"
+              color="warning"
+              size="small"
+              class="ma-2"
+              style="position: relative; z-index: 2"
             >
-              <v-icon icon="mdi-image" size="90" color="grey-lighten-1"></v-icon>
-            </div>
-          </template>
-        </v-img>
+              {{ $t('products.lowStock', { stock: product.stock }) }}
+            </v-chip>
+            <v-chip
+              v-else-if="product.stock === 0"
+              color="error"
+              size="small"
+              class="ma-2"
+              style="position: relative; z-index: 2"
+            >
+              {{ $t('products.outOfStock') }}
+            </v-chip>
           
+            <!-- Placeholder totalmente cubriendo, pero detrás -->
+            <template #placeholder>
+              <div
+                class="d-flex align-center justify-center fill-height"
+                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; background-color: #f5f5f5;"
+              >
+                <v-icon icon="mdi-image" size="90" color="grey-lighten-1"></v-icon>
+              </div>
+            </template>
+          </v-img>
+            
           <v-card-title class="text-truncate">{{ product.name }}</v-card-title>
           
           <v-card-text>
             <div class="d-flex justify-space-between align-center mb-2">
-              <div class="text-h6 font-weight-bold">{{ formatPrice(product.price) }}</div>
+              <div class="text-h6 font-weight-bold">${{ product.price }},00</div>              
               <div class="text-caption text-medium-emphasis">
                 {{ $t('products.stock', { stock: product.stock }) }}
               </div>
@@ -102,7 +68,7 @@
             <v-btn
               color="primary"
               variant="elevated"
-              @click="addToCart(product.uuid)"
+              @click="addToCart(product.id)"
               :disabled="product.stock === 0 || addingToCart[product.id]"
               :loading="addingToCart[product.id]"
             >
@@ -112,6 +78,39 @@
         </v-card>
       </v-col>
     </v-row>
+
+    <!-- Loading state -->
+    <div v-if="isLoading" class="loading-indicator">
+      <v-progress-circular indeterminate color="primary" size="64"></v-progress-circular>
+    </div>
+
+    <!-- Error state -->
+    <v-alert
+      v-if="error"
+      type="error"
+      variant="tonal"
+      class="my-4"
+    >
+      {{ error }}
+      <template v-slot:append>
+        <v-btn variant="text" @click="fetchProducts">
+          {{ $t('common.retry') }}
+        </v-btn>
+      </template>
+    </v-alert>
+
+    <!-- No results state -->
+    <v-alert
+      v-if="!isLoading && products.length === 0"
+      type="info"
+      variant="tonal"
+      class="my-4"
+    >
+      {{ $t('products.noResults') }}
+      <div class="text-body-2 mt-2">
+        {{ $t('products.tryDifferentSearch') }}
+      </div>
+    </v-alert>
 
     <!-- Paginación -->
     <div v-if="pagination.last_page > 1" class="d-flex justify-center mt-6">
@@ -168,17 +167,9 @@ watch(() => props.categoryId, () => {
   })
 })
 
-// Formatear precio
-const formatPrice = (price: number) => {
-  return new Intl.NumberFormat('es-ES', {
-    style: 'currency',
-    currency: 'EUR'
-  }).format(price)
-}
-
 // Agregar al carrito
 const addToCart = async (productId: string) => {
-  const product = products.value.find(p => p.uuid === productId)
+  const product = products.value.find(p => p.id === productId)
   
   if (!product) return
   
@@ -195,7 +186,7 @@ const addToCart = async (productId: string) => {
   addingToCart.value = { ...addingToCart.value, [productId]: true }
   
   try {
-    const success = await addProductToCart(productId, 1)
+    const success = await addProductToCart(product.id, 1)
     
     if (success) {
       // Mostrar mensaje de éxito
@@ -219,6 +210,19 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.product-grid {
+  position: relative;
+  min-height: 200px;
+}
+
+.loading-indicator {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+}
+
 .product-card {
   transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
