@@ -4,7 +4,7 @@ export interface CartItem {
   id: string
   product_id: string
   product: Product
-  quantity: number
+  stock: number
   price: number
   total: number
 }
@@ -20,11 +20,11 @@ export interface Cart {
 
 export interface AddToCartRequest {
   product_id: string
-  quantity: number
+  stock: number
 }
 
 export interface UpdateCartItemRequest {
-  quantity: number
+  stock: number
 }
 
 export interface CartResponse {
