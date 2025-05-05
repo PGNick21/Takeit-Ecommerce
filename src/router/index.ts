@@ -30,13 +30,13 @@ const router = createRouter({
     {
       path: '/profile',
       name: 'profile',
-      component: () => import('@/views/DashboardView.vue'), // Placeholder, se implementará después
+      component: () => import('@/views/ProfileView.vue'),
       meta: { requiresAuth: true }
     },
     {
       path: '/settings',
       name: 'settings',
-      component: () => import('@/views/DashboardView.vue'), // Placeholder, se implementará después
+      component: () => import('@/views/SettingsView.vue'),
       meta: { requiresAuth: true }
     },
     {

@@ -16,10 +16,19 @@ export default defineConfig({
   },
   server: {
     port: 3000,
-    open: true
+    open: true,
+    host: '0.0.0.0',
+    strictPort: true,
+    allowedHosts: ['.ngrok-free.app', 'localhost'],
+    hmr: {
+      host: 'localhost'
+    }
   },
   build: {
     outDir: 'dist',
     sourcemap: true
+  },
+  optimizeDeps: {
+    include: ['vue', 'vuetify', 'vue-router', '@vueuse/core']
   }
 })

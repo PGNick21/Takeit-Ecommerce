@@ -14,12 +14,19 @@ class CartService {
    * Agrega un producto al carrito
    */
   async addToCart(data: AddToCartRequest): Promise<CartItemResponse> {
-    const response = await apiService.post<CartItemResponse>('/carts', data)
-    return response
+    try {
+      const response = await apiService.post<CartItemResponse>('/carts', data)
+      return response
+    } catch (error: any) {
+      if (error.response?.status === 422) {
+        throw new Error('El producto ya está en el carrito')
+      }
+      throw error
+    }
   }
 
   /**
-   * Actualiza la cantidad de un producto en el carrito
+   * Actualiza un item del carrito
    */
   async updateCartItem(itemId: string, data: UpdateCartItemRequest): Promise<CartItemResponse> {
     const response = await apiService.put<CartItemResponse>(`/carts/${itemId}`, data)
@@ -27,17 +34,17 @@ class CartService {
   }
 
   /**
-   * Elimina un producto del carrito
+   * Elimina un item del carrito
    */
   async removeFromCart(itemId: string): Promise<void> {
-    await apiService.delete<{ message: string }>(`/carts/${itemId}`)
+    await apiService.delete(`/carts/${itemId}`)
   }
 
   /**
    * Vacía el carrito
    */
   async clearCart(): Promise<void> {
-    await apiService.delete<{ message: string }>('/carts')
+    await apiService.delete('/carts')
   }
 }
 

@@ -52,4 +52,28 @@ export class AuthService {
       throw new Error('No se pudo obtener el perfil del usuario')
     }
   }
+
+  static async refreshToken(): Promise<AuthResponse> {
+    try {
+      const response = await apiService.post<ServerAuthResponse>('/refresh-token')
+      
+      if (!response.success || !response.data?.token) {
+        throw new Error('No se pudo refrescar el token')
+      }
+  
+      const authResponse: AuthResponse = {
+        token: response.data.token,
+        user: response.data.user,
+        message: response.message
+      }
+  
+      // Guardamos el nuevo token
+      setToken(authResponse.token)
+      
+      return authResponse
+    } catch (error: any) {
+      console.error('Error al refrescar token:', error)
+      throw new Error('No se pudo refrescar la sesión')
+    }
+  }
 }
