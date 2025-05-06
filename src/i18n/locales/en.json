@@ -43,6 +43,7 @@
   "products": {
     "title": "Products",
     "search": "Search products",
+    "searchBy": "Search by name, price, or description",
     "noResults": "No products found",
     "tryDifferentSearch": "Try a different search or clear filters",
     "clearFilters": "Clear filters",
@@ -91,8 +92,18 @@
   },
   "settings": {
     "title": "Settings",
+    "appearance": "Appearance",
     "language": "Language",
-    "theme": "Theme",
+    "theme": {
+      "title": "Theme",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    },
+    "language_options": {
+      "es": "Spanish",
+      "en": "English"
+    },
     "notifications": "Notifications",
     "privacy": "Privacy"
   },

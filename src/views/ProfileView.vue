@@ -1,5 +1,13 @@
 <template>
     <v-container>
+      <!-- Cabecera con botón de regreso -->
+      <v-row align="center" class="mb-4">
+        <v-col cols="auto mt-9">
+          <v-btn icon @click="goHome">
+            <v-icon>mdi-arrow-left</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
       <v-row>
         <v-col cols="12" md="8" offset-md="2">
           <v-card>
@@ -43,9 +51,15 @@
   <script setup lang="ts">
   import { computed } from 'vue'
   import { useAuthStore } from '@/stores/auth'
+  import { useRouter } from 'vue-router'
   
   const authStore = useAuthStore()
   const user = computed(() => authStore.user)
+  const router = useRouter()
+  
+  const goHome = () => {
+    router.push({ name: 'dashboard' })
+  }
   
   const userInitials = computed(() => {
     if (!user.value?.name) return 'U'

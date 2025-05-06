@@ -1,5 +1,13 @@
 <template>
     <v-container>
+      <!-- Cabecera con botón de regreso -->
+      <v-row align="center" class="mb-4">
+        <v-col cols="auto mt-9">
+          <v-btn icon @click="goHome">
+            <v-icon>mdi-arrow-left</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
       <v-row>
         <v-col cols="12" md="8" offset-md="2">
           <v-card>
@@ -59,6 +67,7 @@
   import { ref, computed } from 'vue'
   import { useTheme, type ThemeMode } from '@/composables/useTheme'
   import { useI18n } from 'vue-i18n'
+  import { useRouter } from 'vue-router'
   
   // Theme
   const { isDark, setTheme, themeMode } = useTheme()
@@ -94,6 +103,12 @@
       localStorage.setItem('locale', value)
     }
   })
+  
+  // Botón de regreso
+  const router = useRouter()
+  const goHome = () => {
+    router.push({ name: 'dashboard' })
+  }
   </script>
   
   <style scoped>

@@ -33,6 +33,10 @@ export interface CartResponse {
 }
 
 export interface CartItemResponse {
-  data: CartItem
-  message: string
+  id: number
+  uuid: string
+  product: Product
+  stock: number
+  created_at: string
+  updated_at: string
 }
