@@ -1,7 +1,7 @@
 <template>
   <div class="product-grid">
     <!-- Filtros arriba -->
-    <div class="mb-2">
+    <div class="mb-2 product-grid-filters">
       <v-row>
         <v-col>
           <v-text-field
@@ -241,5 +241,22 @@ onMounted(() => {
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+@media (max-width: 600px) {
+  .product-card {
+    margin-right: 45px;
+  }
+
+  .product-grid-filters {
+    width: auto;
+    display: flex;
+  }
+
+  .v-text-field {
+    width: 365px;
+    min-width: 0;
+    box-sizing: border-box;
+  }
 }
 </style>

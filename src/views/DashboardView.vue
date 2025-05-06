@@ -6,7 +6,7 @@
         v-model="drawer"
         :rail="rail"
         permanent
-        :width="rail ? 100 : 280"
+        :width="rail ? 70 : 180"
         class="border-r sidebar"
         :class="{ 'sidebar--collapsed': rail }"
       >
@@ -57,10 +57,10 @@
 
       <!-- Contenido principal -->
       <v-main class="main-content">
-        <v-container fluid class="pa-4 main-container">
+        <v-container fluid class="pa-4 main-container products-container">
           <v-row no-gutters>
             <v-col cols="12">
-              <h2 class="text-h5 mb-4">{{ $t('products.title') }}</h2>
+              <h2 class="text-h5 mb-4 mt-4">{{ $t('products.title') }}</h2>
 
               <product-grid 
                 :category-id="selectedCategoryId ?? undefined"
@@ -224,11 +224,6 @@ const handleCategorySelected = (categoryId: string | null) => {
     position: fixed !important;
     z-index: 1000;
   }
-
-  .main-content {
-    margin-left: 0;
-    width: 100%;
-  }
 }
 
 @media (max-width: 600px) {
@@ -242,6 +237,27 @@ const handleCategorySelected = (categoryId: string | null) => {
 
   .main-container {
     padding: 4px !important;
+  }
+
+  .sidebar--collapsed + .main-content {
+    position: relative;
+    margin-left: 140px;
+    width: calc(100% - 100px);
+  }
+
+  .sidebar--collapsed {
+    margin-top: 60px !important;
+  }
+
+  .sidebar {
+    margin-top: 60px !important;
+  }
+
+  .products-container {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    max-width: 100vw;
+    box-sizing: border-box;
   }
 }
 </style>
