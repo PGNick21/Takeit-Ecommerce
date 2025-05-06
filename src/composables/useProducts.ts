@@ -18,67 +18,89 @@ export function useProducts() {
     last_page: 1
   })
 
-  // Función para fetch products con debouncing
-  const debouncedFetchProducts = debounce(async (params?: ProductParams) => {
+  // Función principal para fetch products
+  const fetchProducts = async (params?: ProductParams) => {
     isLoading.value = true
     error.value = null
     try {
-      // Si todos los filtros están vacíos, no pasamos parámetros de filtrado
-      const hasFilters = searchQuery.value
       const fetchParams: ProductParams = {
-        page: pagination.value.current_page,
-        per_page: pagination.value.per_page
-      };
-
-      // Solo añadimos parámetros de filtrado si hay algún valor
-      if (hasFilters) {
-        fetchParams.search_key = searchQuery.value || undefined;
-        // fetchParams.category_uuid = selectedCategoryId.value || undefined;
-        // fetchParams.brand = selectedBrand.value || undefined;
-        // fetchParams.color = selectedColor.value || undefined;
+        page: params?.page || 1,
+        per_page: 12
       }
 
-      const response = await ShopService.getProducts({
-        ...params,
-        ...fetchParams
-      });
-      products.value = response.data || [];
-      if (response.meta) {
-        pagination.value = response.meta;
+      // Añadir parámetros de búsqueda y filtros
+      if (searchQuery.value) {
+        fetchParams.search_key = searchQuery.value
+      }
+      if (selectedCategoryId.value) {
+        fetchParams.category_uuid = selectedCategoryId.value
+      }
+
+      console.log('Fetching products with params:', fetchParams)
+      const response = await ShopService.getProducts(fetchParams)
+      
+      if (response && response.data) {
+        products.value = response.data
+        if (response.meta) {
+          pagination.value = {
+            current_page: response.meta.current_page,
+            per_page: response.meta.per_page,
+            total: response.meta.total,
+            last_page: response.meta.last_page
+          }
+        }
+      } else {
+        products.value = []
+        pagination.value = {
+          current_page: 1,
+          per_page: 12,
+          total: 0,
+          last_page: 1
+        }
       }
     } catch (err: any) {
-      error.value = err.message || 'Error al cargar los productos';
-      console.error('Error fetching products:', err);
+      console.error('Error fetching products:', err)
+      error.value = err.message || 'Error al cargar los productos'
+      products.value = []
+      pagination.value = {
+        current_page: 1,
+        per_page: 12,
+        total: 0,
+        last_page: 1
+      }
     } finally {
-      isLoading.value = false;
+      isLoading.value = false
     }
-  }, 500); // Debounce de 500ms
+  }
 
-  const fetchProducts = (params?: ProductParams) => {
-    debouncedFetchProducts(params);
-  };
+  // Debounce para búsquedas
+  const debouncedSearch = debounce(() => {
+    pagination.value.current_page = 1
+    fetchProducts({ page: 1 })
+  }, 500)
 
   // Watchers para los filtros
-  watch([searchQuery, selectedBrand, selectedColor, selectedCategoryId], () => {
-    pagination.value.current_page = 1; // Reset a la primera página
-    fetchProducts();
-  });
+  watch(searchQuery, () => {
+    debouncedSearch()
+  })
+
+  watch([selectedBrand, selectedColor], () => {
+    pagination.value.current_page = 1
+    fetchProducts({ page: 1 })
+  })
 
   const filterByCategory = (categoryId: string | null) => {
-    selectedCategoryId.value = categoryId;
-    fetchProducts({
-      category_uuid: categoryId || undefined,
-      page: 1,
-      per_page: pagination.value.per_page
-    });
-  };
+    selectedCategoryId.value = categoryId
+    pagination.value.current_page = 1
+    fetchProducts({ page: 1 })
+  }
 
   const changePage = (page: number) => {
-    pagination.value.current_page = page;
-    fetchProducts();
-  };
+    console.log('Changing to page:', page)
+    fetchProducts({ page })
+  }
 
-  const hasProducts = computed(() => products.value.length > 0);
+  const hasProducts = computed(() => products.value.length > 0)
 
   return {
     products,
@@ -93,5 +115,5 @@ export function useProducts() {
     filterByCategory,
     changePage,
     hasProducts
-  };
+  }
 }

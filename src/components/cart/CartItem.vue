@@ -38,7 +38,7 @@
               color="error"
               @click="showConfirmDialog = true"
               :loading="isRemoving"
-              :disabled="isRemoving || isUpdating"
+              disabled
             >
               <v-icon>mdi-delete-outline</v-icon>
             </v-btn>
@@ -51,7 +51,7 @@
               variant="outlined"
               size="small"
               @click="handleDecrement"
-              :disabled="isUpdating || isRemoving"
+              disabled
             >
               <v-icon>mdi-minus</v-icon>
             </v-btn>
@@ -63,7 +63,7 @@
               variant="outlined"
               size="small"
               @click="handleIncrement"
-              :disabled="isUpdating || isRemoving"
+              disabled
             >
               <v-icon>mdi-plus</v-icon>
             </v-btn>

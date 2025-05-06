@@ -154,20 +154,21 @@ const props = defineProps({
   }
 })
 
-const { products, isLoading, error, searchQuery, fetchProducts, pagination, filterByCategory } = useProducts()
+const { products, isLoading, error, searchQuery, fetchProducts, pagination, filterByCategory, changePage } = useProducts()
 const { addToCart: addProductToCart } = useCart()
 const { showError } = useErrorHandler()
 
 const addingToCart = ref<Record<string, boolean>>({})
 const currentPage = ref(1)
 
+// Sincronizar currentPage con pagination.current_page
+watch(() => pagination.current_page, (newPage) => {
+  currentPage.value = newPage
+})
+
 const handlePageChange = (page: number) => {
   currentPage.value = page
-  fetchProducts({
-    search_key: searchQuery.value || undefined,
-    per_page: 12,
-    page: page
-  })
+  changePage(page)
 }
 
 watch([() => props.categoryId], () => {
@@ -204,6 +205,8 @@ const addToCart = async (productId: string) => {
 }
 
 onMounted(() => {
+  // Cargar productos iniciales
+  console.log('ProductGrid mounted, initial category:', props.categoryId)
   filterByCategory(props.categoryId)
 })
 </script>
