@@ -135,21 +135,14 @@ export const useCartStore = defineStore('cart', () => {
     return !cart.value || !lastUpdate.value || (Date.now() - lastUpdate.value) > REFRESH_INTERVAL
   }
 
-  const getCart = async (forceRefresh = false) => {
-    if (forceRefresh || shouldRefreshCart()) {
-      await fetchCart()
-    }
-    return cart.value
-  }
-
-  const updateCartItem = async (id: string, stock: number) => {
+  const updateCartItem = async (productId: string, stock: number) => {
     isLoading.value = true
     error.value = null
 
     try {
-      await cartService.updateCartItem(id, { stock })
+      await cartService.updateCartItem(productId, { stock })
       await fetchCart()
-      console.log('[Cart] Updated item:', { id, newStock: stock })
+      console.log('[Cart] Updated item:', { productId, newStock: stock })
     } catch (err: any) {
       error.value = err.message || 'Error al actualizar el carrito'
       console.error('[Cart] Error updating item:', err.message)
@@ -159,14 +152,14 @@ export const useCartStore = defineStore('cart', () => {
     }
   }
 
-  const removeFromCart = async (id: string) => {
+  const removeFromCart = async (productId: string) => {
     isLoading.value = true
     error.value = null
 
     try {
-      await cartService.removeFromCart(id)
+      await cartService.removeFromCart(productId)
       await fetchCart()
-      console.log('[Cart] Removed item:', { id })
+      console.log('[Cart] Removed item:', { productId })
     } catch (err: any) {
       error.value = err.message || 'Error al eliminar del carrito'
       console.error('[Cart] Error removing item:', err.message)

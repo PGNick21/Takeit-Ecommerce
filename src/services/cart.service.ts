@@ -1,5 +1,5 @@
 import { apiService } from './api.service'
-import type { Cart, CartResponse, CartItemResponse, AddToCartRequest, UpdateCartItemRequest } from '@/types/cart.types'
+import type { Cart, CartItemResponse, AddToCartRequest, UpdateCartItemRequest } from '@/types/cart.types'
 
 class CartService {
   /**

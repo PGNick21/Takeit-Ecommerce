@@ -43,6 +43,7 @@
   "products": {
     "title": "Productos",
     "search": "Buscar productos",
+    "searchBy": "Buscar por nombre, precio, o descripción",
     "noResults": "No se encontraron productos",
     "tryDifferentSearch": "Intenta con una búsqueda diferente o elimina los filtros",
     "clearFilters": "Limpiar filtros",
