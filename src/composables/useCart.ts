@@ -10,26 +10,26 @@ export function useCart() {
   const router = useRouter()
   const { showError } = useErrorHandler()
 
-  // Inicializar el carrito si el usuario está autenticado
+  // Inicializar el carrito solo una vez cuando el componente se monta
   onMounted(async () => {
-    if (authStore.isAuthenticated) {
+    if (authStore.isAuthenticated && !cartStore.cart) {
       await cartStore.fetchCart()
     }
   })
 
-  // Método para agregar un producto al carrito
-  const addToCart = async (productId: string, quantity: number = 1) => {
+  // Método para agregar al carrito
+  const addToCart = async (productId: string, stock: number) => {
     if (!authStore.isAuthenticated) {
       showError({
         type: 'unauthorized',
         message: 'Debes iniciar sesión para agregar productos al carrito'
       })
       router.push({ name: 'login' })
-      return
+      return false
     }
 
     try {
-      await cartStore.addToCart(productId, quantity)
+      await cartStore.addToCart(productId, stock)
       return true
     } catch (error) {
       return false
@@ -37,13 +37,9 @@ export function useCart() {
   }
 
   // Método para actualizar la cantidad de un producto
-  const updateQuantity = async (itemId: string, quantity: number) => {
-    if (quantity <= 0) {
-      return removeFromCart(itemId)
-    }
-    
+  const updateQuantity = async (id: string, quantity: number) => {
     try {
-      await cartStore.updateCartItem(itemId, quantity)
+      await cartStore.updateCartItem(id, quantity)
       return true
     } catch (error) {
       return false
@@ -51,22 +47,22 @@ export function useCart() {
   }
 
   // Método para incrementar la cantidad de un producto
-  const incrementQuantity = async (itemId: string, currentQuantity: number) => {
-    return updateQuantity(itemId, currentQuantity + 1)
+  const incrementQuantity = async (id: string, currentQuantity: number) => {
+    return updateQuantity(id, currentQuantity + 1)
   }
 
   // Método para decrementar la cantidad de un producto
-  const decrementQuantity = async (itemId: string, currentQuantity: number) => {
+  const decrementQuantity = async (id: string, currentQuantity: number) => {
     if (currentQuantity <= 1) {
-      return removeFromCart(itemId)
+      return removeFromCart(id)
     }
-    return updateQuantity(itemId, currentQuantity - 1)
+    return updateQuantity(id, currentQuantity - 1)
   }
 
   // Método para eliminar un producto del carrito
-  const removeFromCart = async (itemId: string) => {
+  const removeFromCart = async (id: string) => {
     try {
-      await cartStore.removeFromCart(itemId)
+      await cartStore.removeFromCart(id)
       return true
     } catch (error) {
       return false

@@ -12,6 +12,7 @@ export const useCartStore = defineStore('cart', () => {
   const error = ref<string | null>(null)
   const isCartOpen = ref(false)
   const lastUpdate = ref<number>(0)
+  const isFetching = ref(false)
   // const { notify } = useNotifier()
 
   // Getters
@@ -31,21 +32,47 @@ export const useCartStore = defineStore('cart', () => {
 
   // Acciones
   const fetchCart = async () => {
+    // Evitar múltiples solicitudes simultáneas
+    if (isFetching.value) return
+    if (!shouldRefreshCart()) return
+
+    isFetching.value = true
     isLoading.value = true
     error.value = null
 
     try {
-      cart.value = await cartService.getCart()
+      const cartData = await cartService.getCart()
+      
+      if (!cartData) {
+        console.warn('[Cart] No data received from API')
+        cart.value = {
+          id: '',
+          user_id: '',
+          items: [],
+          total: 0,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }
+      } else {
+        cart.value = cartData
+        console.log('[Cart] Updated successfully:', {
+          itemCount: cartData.items.length,
+          total: cartData.total
+        })
+      }
+      
       lastUpdate.value = Date.now()
     } catch (err: any) {
+      console.error('[Cart] Error:', err.message)
       error.value = err.message || 'Error al cargar el carrito'
-      console.error('Error fetching cart:', err)
+      cart.value = null
     } finally {
       isLoading.value = false
+      isFetching.value = false
     }
   }
 
-  const addToCart = async (productId: string, quantity: number) => {
+  const addToCart = async (productId: string, stock: number) => {
     isLoading.value = true
     error.value = null
 
@@ -60,29 +87,34 @@ export const useCartStore = defineStore('cart', () => {
       const product = await productService.getProduct(productId)
 
       // Validar stock disponible
-      if (currentQuantity + quantity > product.stock) {
+      if (currentQuantity + stock > product.stock) {
         throw new Error(`Solo hay ${product.stock} unidades disponibles`)
       }
 
       const data: AddToCartRequest = {
         product_id: productId,
-        stock: quantity // Changed from stock to quantity for consistency
+        stock: stock
       }
 
       const response = await cartService.addToCart(data)
 
       // Actualizar el estado local del carrito
       if (!cart.value) {
-        // Obtener el carrito completo si no existe
-        cart.value = await cartService.getCart()
+        await fetchCart()
       } else {
-        // Si el producto ya existía, actualizamos la cantidad
         if (existingItem) {
-          existingItem.stock = quantity
+          existingItem.stock = stock
+          console.log('[Cart] Updated item quantity:', { productId, newStock: stock })
         } else {
-          // Agregar el nuevo item
-          cart.value.items.push(response.data)
-          // notify('Producto agregado al carrito', 'success')
+          cart.value.items.push({
+            id: response.id.toString(),
+            product_id: response.product.id.toString(),
+            product: response.product,
+            stock: response.stock,
+            price: parseFloat(response.product.price),
+            total: parseFloat(response.product.price) * response.stock
+          })
+          console.log('[Cart] Added new item:', { productId, stock })
         }
       }
 
@@ -90,7 +122,7 @@ export const useCartStore = defineStore('cart', () => {
       return response
     } catch (err: any) {
       error.value = err.message || 'Error al agregar al carrito'
-      console.error('Error adding to cart:', err)
+      console.error('[Cart] Error adding item:', err.message)
       throw err
     } finally {
       isLoading.value = false
@@ -110,36 +142,34 @@ export const useCartStore = defineStore('cart', () => {
     return cart.value
   }
 
-  const updateCartItem = async (itemId: string, stock: number) => {
+  const updateCartItem = async (id: string, stock: number) => {
     isLoading.value = true
     error.value = null
 
     try {
-      await cartService.updateCartItem(itemId, { stock })
-
-      // Actualizar el carrito después de modificar un producto
+      await cartService.updateCartItem(id, { stock })
       await fetchCart()
+      console.log('[Cart] Updated item:', { id, newStock: stock })
     } catch (err: any) {
       error.value = err.message || 'Error al actualizar el carrito'
-      console.error('Error updating cart item:', err)
+      console.error('[Cart] Error updating item:', err.message)
       throw err
     } finally {
       isLoading.value = false
     }
   }
 
-  const removeFromCart = async (itemId: string) => {
+  const removeFromCart = async (id: string) => {
     isLoading.value = true
     error.value = null
 
     try {
-      await cartService.removeFromCart(itemId)
-
-      // Actualizar el carrito después de eliminar un producto
+      await cartService.removeFromCart(id)
       await fetchCart()
+      console.log('[Cart] Removed item:', { id })
     } catch (err: any) {
       error.value = err.message || 'Error al eliminar del carrito'
-      console.error('Error removing from cart:', err)
+      console.error('[Cart] Error removing item:', err.message)
       throw err
     } finally {
       isLoading.value = false
@@ -153,9 +183,10 @@ export const useCartStore = defineStore('cart', () => {
     try {
       await cartService.clearCart()
       cart.value = null
+      console.log('[Cart] Cleared successfully')
     } catch (err: any) {
       error.value = err.message || 'Error al vaciar el carrito'
-      console.error('Error clearing cart:', err)
+      console.error('[Cart] Error clearing cart:', err.message)
       throw err
     } finally {
       isLoading.value = false

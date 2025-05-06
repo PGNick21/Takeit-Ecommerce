@@ -56,7 +56,7 @@
               <v-icon>mdi-minus</v-icon>
             </v-btn>
             
-            <span class="mx-3 text-body-1">{{ item.quantity }}</span>
+            <span class="mx-3 text-body-1">{{ item.stock }}</span>
             
             <v-btn
               icon
@@ -96,7 +96,7 @@
   const handleIncrement = async () => {
     isUpdating.value = true
     try {
-      await incrementQuantity(props.item.id, props.item.quantity)
+      await incrementQuantity(props.item.id, props.item.stock)
     } finally {
       isUpdating.value = false
     }
@@ -105,7 +105,7 @@
   const handleDecrement = async () => {
     isUpdating.value = true
     try {
-      await decrementQuantity(props.item.id, props.item.quantity)
+      await decrementQuantity(props.item.id, props.item.stock)
     } finally {
       isUpdating.value = false
     }
