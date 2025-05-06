@@ -162,7 +162,7 @@ const addingToCart = ref<Record<string, boolean>>({})
 const currentPage = ref(1)
 
 // Sincronizar currentPage con pagination.current_page
-watch(() => pagination.current_page, (newPage) => {
+watch(() => pagination.value.current_page, (newPage) => {
   currentPage.value = newPage
 })
 
