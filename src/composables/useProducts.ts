@@ -1,7 +1,7 @@
 import { ref, computed, watch } from 'vue'
+import { debounce } from 'lodash'
 import { ShopService } from '@/services/shop.service'
 import type { Product, ProductParams, PaginationMeta } from '@/types/shop.types'
-import { debounce } from 'lodash'
 
 export function useProducts() {
   const products = ref<Product[]>([])
@@ -9,6 +9,8 @@ export function useProducts() {
   const error = ref<string | null>(null)
   const searchQuery = ref('')
   const selectedCategoryId = ref<string | null>(null)
+  const selectedBrand = ref('')
+  const selectedColor = ref('')
   const pagination = ref<PaginationMeta>({
     current_page: 1,
     per_page: 12,
@@ -16,61 +18,67 @@ export function useProducts() {
     last_page: 1
   })
 
-  // Debounced search function
-  const debouncedSearch = debounce((query: string) => {
-    fetchProducts({
-      search_key: query || undefined,
-      category_uuid: selectedCategoryId.value || undefined,
-      page: 1, // Reset to first page on new search
-      per_page: pagination.value.per_page
-    })
-  }, 500)
-
-  // Watch for search query changes
-  watch(searchQuery, (newQuery) => {
-    debouncedSearch(newQuery)
-  })
-
-  const fetchProducts = async (params?: ProductParams) => {
+  // Función para fetch products con debouncing
+  const debouncedFetchProducts = debounce(async (params?: ProductParams) => {
     isLoading.value = true
     error.value = null
-
     try {
-      const response = await ShopService.getProducts(params)
-      products.value = response.data || []
-      
-      // Update pagination if available
+      // Si todos los filtros están vacíos, no pasamos parámetros de filtrado
+      const hasFilters = searchQuery.value
+      const fetchParams: ProductParams = {
+        page: pagination.value.current_page,
+        per_page: pagination.value.per_page
+      };
+
+      // Solo añadimos parámetros de filtrado si hay algún valor
+      if (hasFilters) {
+        fetchParams.search_key = searchQuery.value || undefined;
+        // fetchParams.category_uuid = selectedCategoryId.value || undefined;
+        // fetchParams.brand = selectedBrand.value || undefined;
+        // fetchParams.color = selectedColor.value || undefined;
+      }
+
+      const response = await ShopService.getProducts({
+        ...params,
+        ...fetchParams
+      });
+      products.value = response.data || [];
       if (response.meta) {
-        pagination.value = response.meta
+        pagination.value = response.meta;
       }
     } catch (err: any) {
-      error.value = err.message || 'Error al cargar los productos'
-      console.error('Error fetching products:', err)
+      error.value = err.message || 'Error al cargar los productos';
+      console.error('Error fetching products:', err);
     } finally {
-      isLoading.value = false
+      isLoading.value = false;
     }
-  }
+  }, 500); // Debounce de 500ms
+
+  const fetchProducts = (params?: ProductParams) => {
+    debouncedFetchProducts(params);
+  };
+
+  // Watchers para los filtros
+  watch([searchQuery, selectedBrand, selectedColor, selectedCategoryId], () => {
+    pagination.value.current_page = 1; // Reset a la primera página
+    fetchProducts();
+  });
 
   const filterByCategory = (categoryId: string | null) => {
-    selectedCategoryId.value = categoryId
+    selectedCategoryId.value = categoryId;
     fetchProducts({
       category_uuid: categoryId || undefined,
-      search_key: searchQuery.value || undefined,
-      page: 1, // Reset to first page on category change
+      page: 1,
       per_page: pagination.value.per_page
-    })
-  }
+    });
+  };
 
   const changePage = (page: number) => {
-    fetchProducts({
-      category_uuid: selectedCategoryId.value || undefined,
-      search_key: searchQuery.value || undefined,
-      page,
-      per_page: pagination.value.per_page
-    })
-  }
+    pagination.value.current_page = page;
+    fetchProducts();
+  };
 
-  const hasProducts = computed(() => products.value.length > 0)
+  const hasProducts = computed(() => products.value.length > 0);
 
   return {
     products,
@@ -78,10 +86,12 @@ export function useProducts() {
     error,
     searchQuery,
     selectedCategoryId,
+    selectedBrand,
+    selectedColor,
     pagination,
     fetchProducts,
     filterByCategory,
     changePage,
     hasProducts
-  }
+  };
 }
