@@ -22,7 +22,7 @@
         </div>
       </div>
       
-      <div v-if="showRetry" class="mt-2">
+      <div v-if="props.showRetry" class="mt-2">
         <v-btn
           variant="text"
           size="small"
@@ -39,7 +39,6 @@
   import { computed } from 'vue'
   import { useErrorHandler } from '@/composables/useErrorHandler'
   import { useI18n } from 'vue-i18n'
-  import { ref } from 'vue';
   
   const props = defineProps({
     showRetry: {

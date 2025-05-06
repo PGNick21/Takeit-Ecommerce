@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { AuthService } from '@/services/auth.service'
 import type { User, LoginCredentials } from '@/types/auth.types'
-import { setToken, removeToken, getToken } from '@/utils/token'
+import { removeToken, getToken } from '@/utils/token'
 
 const USER_KEY = 'user_data'
 

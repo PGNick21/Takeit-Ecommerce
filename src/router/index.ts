@@ -49,7 +49,7 @@ const router = createRouter({
 })
 
 // Guardia de navegación para rutas protegidas
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
   const token = getToken()
 

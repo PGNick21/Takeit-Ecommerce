@@ -1,6 +1,6 @@
 <template>
     <div class="error-provider">
-      <error-alert :show-retry="showRetry" @retry="handleRetry" />
+      <error-alert :show-retry="props.showRetry" @retry="handleRetry" />
       <slot></slot>
     </div>
   </template>

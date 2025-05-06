@@ -64,7 +64,7 @@
   </template>
   
   <script setup lang="ts">
-  import { ref, computed } from 'vue'
+  import { computed } from 'vue'
   import { useTheme, type ThemeMode } from '@/composables/useTheme'
   import { useI18n } from 'vue-i18n'
   import { useRouter } from 'vue-router'
