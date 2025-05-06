@@ -11,7 +11,8 @@
     "view": "View",
     "back": "Back",
     "next": "Next",
-    "previous": "Previous"
+    "previous": "Previous",
+    "backToHome": "Back to home"
   },
   "auth": {
     "login": "Login",
@@ -81,7 +82,9 @@
     "placeOrder": "Place Order",
     "backToCart": "Back to Cart",
     "orderSuccess": "Order placed successfully!",
-    "orderError": "Error processing order"
+    "orderError": "Error processing order",
+    "disabled": "Checkout is currently disabled",
+    "disabledDescription": "It is currently not possible to process purchases from this view."
   },
   "profile": {
     "title": "Profile",

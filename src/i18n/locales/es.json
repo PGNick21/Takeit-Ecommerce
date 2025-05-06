@@ -11,7 +11,8 @@
     "view": "Ver",
     "back": "Volver",
     "next": "Siguiente",
-    "previous": "Anterior"
+    "previous": "Anterior",
+    "backToHome": "Volver al inicio"
   },
   "auth": {
     "login": "Iniciar sesión",
@@ -81,7 +82,9 @@
     "placeOrder": "Realizar pedido",
     "backToCart": "Volver al carrito",
     "orderSuccess": "¡Pedido realizado con éxito!",
-    "orderError": "Error al procesar el pedido"
+    "orderError": "Error al procesar el pedido",
+    "disabled": "La compra no está disponible en este momento",
+    "disabledDescription": "Actualmente no es posible procesar compras desde esta vista."
   },
   "profile": {
     "title": "Perfil",
