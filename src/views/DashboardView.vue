@@ -6,7 +6,7 @@
         v-model="drawer"
         :rail="rail"
         permanent
-        :width="rail ? 70 : 180"
+        :width="rail ? 100 : 310"
         class="border-r sidebar"
         :class="{ 'sidebar--collapsed': rail }"
       >
@@ -127,13 +127,14 @@ const handleCategorySelected = (categoryId: string | null) => {
 .sidebar {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   height: 100vh;
+  width: 310px;
   position: fixed;
   overflow-x: hidden;
   z-index: 1000;
 }
 
 .sidebar--collapsed {
-  width: 130px !important;
+  width: 140px !important;
 }
 
 .user-section {
