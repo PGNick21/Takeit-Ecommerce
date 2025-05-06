@@ -93,7 +93,17 @@
   "settings": {
     "title": "Configuración",
     "language": "Idioma",
-    "theme": "Tema",
+    "appearance": "Apariencia",
+    "theme": {
+      "title": "Tema",
+      "light": "Claro",
+      "dark": "Oscuro",
+      "system": "Sistema"
+    },
+    "language_options": {
+      "es": "Español",
+      "en": "Inglés"
+    },
     "notifications": "Notificaciones",
     "privacy": "Privacidad"
   },

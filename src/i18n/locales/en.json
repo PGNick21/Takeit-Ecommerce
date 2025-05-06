@@ -92,8 +92,18 @@
   },
   "settings": {
     "title": "Settings",
+    "appearance": "Appearance",
     "language": "Language",
-    "theme": "Theme",
+    "theme": {
+      "title": "Theme",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    },
+    "language_options": {
+      "es": "Spanish",
+      "en": "English"
+    },
     "notifications": "Notifications",
     "privacy": "Privacy"
   },
