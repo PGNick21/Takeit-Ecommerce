@@ -43,6 +43,7 @@
   "products": {
     "title": "Productos",
     "search": "Buscar productos",
+    "searchBy": "Buscar por nombre, precio, o descripción",
     "noResults": "No se encontraron productos",
     "tryDifferentSearch": "Intenta con una búsqueda diferente o elimina los filtros",
     "clearFilters": "Limpiar filtros",
@@ -92,7 +93,17 @@
   "settings": {
     "title": "Configuración",
     "language": "Idioma",
-    "theme": "Tema",
+    "appearance": "Apariencia",
+    "theme": {
+      "title": "Tema",
+      "light": "Claro",
+      "dark": "Oscuro",
+      "system": "Sistema"
+    },
+    "language_options": {
+      "es": "Español",
+      "en": "Inglés"
+    },
     "notifications": "Notificaciones",
     "privacy": "Privacidad"
   },

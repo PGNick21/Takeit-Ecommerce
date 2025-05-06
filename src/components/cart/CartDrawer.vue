@@ -35,6 +35,20 @@
             <v-progress-circular indeterminate color="primary"></v-progress-circular>
           </div>
           
+          <!-- Error state -->
+          <div v-else-if="error" class="d-flex flex-column justify-center align-center h-100">
+            <v-icon size="64" color="error" class="mb-4">mdi-alert-circle</v-icon>
+            <h3 class="text-h6 text-error mb-2">{{ error }}</h3>
+            <v-btn
+              color="primary"
+              variant="text"
+              class="mt-4"
+              @click="retryFetch"
+            >
+              {{ $t('common.retry') }}
+            </v-btn>
+          </div>
+          
           <!-- Carrito vacío -->
           <div v-else-if="isEmpty" class="d-flex flex-column justify-center align-center h-100">
             <v-icon size="64" color="grey-lighten-1" class="mb-4">mdi-cart-outline</v-icon>
@@ -66,7 +80,7 @@
         </v-card-text>
         
         <!-- Footer con total y botones -->
-        <template v-if="!isEmpty && !isLoading">
+        <template v-if="!isEmpty && !isLoading && !error">
           <v-divider></v-divider>
           
           <v-card-text class="px-4 py-3">
@@ -104,26 +118,42 @@
   </template>
   
   <script setup lang="ts">
-  import { ref, computed, watch } from 'vue'
+  import { ref, computed, watch, onMounted } from 'vue'
   import { useCart } from '@/composables/useCart'
   import CartItem from './CartItem.vue'
   
   const { 
     cart, 
     isLoading, 
+    error,
     itemCount, 
     totalAmount, 
     isEmpty, 
     isCartOpen, 
     closeCart,
-    proceedToCheckout
+    proceedToCheckout,
+    fetchCart
   } = useCart()
   
   const isOpen = ref(false)
   const isCheckingOut = ref(false)
   
+  // Debug logs
+  watch(cart, (newCart) => {
+    console.log('Cart updated:', newCart)
+  }, { deep: true })
+  
+  watch(isEmpty, (newValue) => {
+    console.log('Cart isEmpty changed:', newValue)
+  })
+  
+  watch(error, (newError) => {
+    console.log('Cart error changed:', newError)
+  })
+  
   // Sincronizar el estado del drawer con el store
   watch(isCartOpen, (newValue) => {
+    console.log('Cart drawer state changed:', newValue)
     isOpen.value = newValue
   })
   
@@ -148,6 +178,20 @@
       isCheckingOut.value = false
     }
   }
+  
+  const retryFetch = async () => {
+    await fetchCart()
+  }
+  
+  onMounted(() => {
+    console.log('CartDrawer mounted')
+    console.log('Initial cart state:', {
+      cart: cart.value,
+      isLoading: isLoading.value,
+      error: error.value,
+      isEmpty: isEmpty.value
+    })
+  })
   </script>
   
   <style scoped>

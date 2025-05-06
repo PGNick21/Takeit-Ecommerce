@@ -1,82 +1,112 @@
 <template>
   <div class="product-grid">
+    <!-- Filtros arriba -->
+    <div class="mb-2">
+      <v-row>
+        <v-col>
+          <v-text-field
+            v-model="searchQuery"
+            :label="$t('products.searchBy')"
+            prepend-inner-icon="mdi-magnify"
+            variant="outlined"
+            clearable
+            @click:clear="searchQuery = ''"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+    </div>
+
+    <!-- Grid de productos o mensaje de no resultados -->
     <v-row>
-      <v-col
-        v-for="product in products"
-        :key="product.id"
-        cols="12"
-        sm="6"
-        md="4"
-        lg="3"
-      >
-        <v-card
-          class="product-card h-100 d-flex flex-column"
-          :elevation="2"
-          :loading="addingToCart[product.id]"
+      <template v-if="products.length > 0">
+        <v-col
+          v-for="product in products"
+          :key="product.id"
+          cols="12"
+          sm="6"
+          md="4"
+          lg="3"
         >
-          <v-img
-            :src="product?.image?.url"
-            height="200"
-            cover
-            class="align-end"
+          <v-card
+            class="product-card h-100 d-flex flex-column"
+            :elevation="2"
+            :loading="addingToCart[product.id]"
           >
-            <!-- Chips de stock: siempre encima -->
-            <v-chip
-              v-if="product.stock <= 5 && product.stock > 0"
-              color="warning"
-              size="small"
-              class="ma-2"
-              style="position: relative; z-index: 2"
+            <v-img
+              :src="product?.image?.url"
+              height="200"
+              cover
+              class="align-end"
             >
-              {{ $t('products.lowStock', { stock: product.stock }) }}
-            </v-chip>
-            <v-chip
-              v-else-if="product.stock === 0"
-              color="error"
-              size="small"
-              class="ma-2"
-              style="position: relative; z-index: 2"
-            >
-              {{ $t('products.outOfStock') }}
-            </v-chip>
-          
-            <!-- Placeholder totalmente cubriendo, pero detrás -->
-            <template #placeholder>
-              <div
-                class="d-flex align-center justify-center fill-height"
-                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; background-color: #f5f5f5;"
+              <!-- Chips de stock: siempre encima -->
+              <v-chip
+                v-if="product.stock <= 5 && product.stock > 0"
+                color="warning"
+                size="small"
+                class="ma-2"
+                style="position: relative; z-index: 2"
               >
-                <v-icon icon="mdi-image" size="90" color="grey-lighten-1"></v-icon>
+                {{ $t('products.lowStock', { stock: product.stock }) }}
+              </v-chip>
+              <v-chip
+                v-else-if="product.stock === 0"
+                color="error"
+                size="small"
+                class="ma-2"
+                style="position: relative; z-index: 2"
+              >
+                {{ $t('products.outOfStock') }}
+              </v-chip>
+              <template #placeholder>
+                <div
+                  class="d-flex align-center justify-center fill-height"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; background-color: #f5f5f5;"
+                >
+                  <v-icon icon="mdi-image" size="90" color="grey-lighten-1"></v-icon>
+                </div>
+              </template>
+            </v-img>
+            <v-card-title class="text-truncate">{{ product.name }}</v-card-title>
+            <v-card-text>
+              <div class="d-flex justify-space-between align-center mb-2">
+                <div class="text-h6 font-weight-bold">${{ product.price }},00</div>
+                <div class="text-caption text-medium-emphasis">
+                  {{ $t('products.stock', { stock: product.stock }) }}
+                </div>
               </div>
-            </template>
-          </v-img>
-            
-          <v-card-title class="text-truncate">{{ product.name }}</v-card-title>
-          
-          <v-card-text>
-            <div class="d-flex justify-space-between align-center mb-2">
-              <div class="text-h6 font-weight-bold">${{ product.price }},00</div>              
-              <div class="text-caption text-medium-emphasis">
-                {{ $t('products.stock', { stock: product.stock }) }}
-              </div>
+              <div class="text-body-2 product-description">{{ product.description }}</div>
+            </v-card-text>
+            <v-card-actions class="mb-2 mr-2 mt-auto">
+              <v-spacer></v-spacer>
+              <v-btn
+                color="primary"
+                variant="elevated"
+                @click="addToCart(product.id)"
+                :disabled="product.stock === 0 || addingToCart[product.id]"
+                :loading="addingToCart[product.id]"
+              >
+                {{ $t('products.addToCart') }}
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-col>
+      </template>
+      <template v-else>
+        <v-col cols="12" class="d-flex flex-column align-center justify-center py-12">
+          <v-alert
+            type="info"
+            variant="tonal"
+            class="text-center"
+            border="start"
+            color="primary"
+          >
+            {{ $t('products.noResults') }}
+            <div class="text-body-2 mt-2">
+              {{ $t('products.tryDifferentSearch') }}
             </div>
-            <div class="text-body-2 product-description">{{ product.description }}</div>
-          </v-card-text>
-          
-          <v-card-actions class="mb-2 mr-2 mt-auto">
-            <v-spacer></v-spacer>
-            <v-btn
-              color="primary"
-              variant="elevated"
-              @click="addToCart(product.id)"
-              :disabled="product.stock === 0 || addingToCart[product.id]"
-              :loading="addingToCart[product.id]"
-            >
-              {{ $t('products.addToCart') }}
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-col>
+          </v-alert>
+        </v-col>
+      </template>
     </v-row>
 
     <!-- Loading state -->
@@ -97,19 +127,6 @@
           {{ $t('common.retry') }}
         </v-btn>
       </template>
-    </v-alert>
-
-    <!-- No results state -->
-    <v-alert
-      v-if="!isLoading && products.length === 0"
-      type="info"
-      variant="tonal"
-      class="my-4"
-    >
-      {{ $t('products.noResults') }}
-      <div class="text-body-2 mt-2">
-        {{ $t('products.tryDifferentSearch') }}
-      </div>
     </v-alert>
 
     <!-- Paginación -->
@@ -137,43 +154,32 @@ const props = defineProps({
   }
 })
 
-const { products, isLoading, error, fetchProducts, pagination } = useProducts()
+const { products, isLoading, error, searchQuery, fetchProducts, pagination, filterByCategory } = useProducts()
 const { addToCart: addProductToCart } = useCart()
 const { showError } = useErrorHandler()
 
-// Estado para controlar los productos que se están agregando al carrito
 const addingToCart = ref<Record<string, boolean>>({})
-
-// Control local de la página actual
 const currentPage = ref(1)
 
-// Manejar cambio de página
 const handlePageChange = (page: number) => {
   currentPage.value = page
   fetchProducts({
-    category_uuid: props.categoryId || undefined,
+    search_key: searchQuery.value || undefined,
     per_page: 12,
     page: page
   })
 }
 
-// Cargar productos cuando cambia la categoría
-watch(() => props.categoryId, () => {
-  currentPage.value = 1 // Reset a la primera página
-  fetchProducts({
-    category_uuid: props.categoryId || undefined,
-    per_page: 12,
-    page: 1
-  })
+watch([() => props.categoryId], () => {
+  currentPage.value = 1
+  filterByCategory(props.categoryId)
 })
 
-// Agregar al carrito
 const addToCart = async (productId: string) => {
   const product = products.value.find(p => p.id === productId)
   
   if (!product) return
   
-  // Validar stock
   if (product.stock <= 0) {
     showError({
       type: 'validation',
@@ -182,18 +188,15 @@ const addToCart = async (productId: string) => {
     return
   }
   
-  // Marcar como agregando
   addingToCart.value = { ...addingToCart.value, [productId]: true }
   
   try {
     const success = await addProductToCart(product.id, 1)
-    
     if (success) {
       // Mostrar mensaje de éxito
       // Aquí podríamos usar un sistema de notificaciones toast
     }
   } finally {
-    // Desmarcar como agregando
     setTimeout(() => {
       addingToCart.value = { ...addingToCart.value, [productId]: false }
     }, 500)
@@ -201,11 +204,7 @@ const addToCart = async (productId: string) => {
 }
 
 onMounted(() => {
-  fetchProducts({
-    category_uuid: props.categoryId || undefined,
-    per_page: 12,
-    page: currentPage.value
-  })
+  filterByCategory(props.categoryId)
 })
 </script>
 

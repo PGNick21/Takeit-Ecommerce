@@ -36,7 +36,7 @@
               variant="text"
               density="comfortable"
               color="error"
-              @click="handleRemove"
+              @click="showConfirmDialog = true"
               :loading="isRemoving"
               :disabled="isRemoving || isUpdating"
             >
@@ -56,7 +56,7 @@
               <v-icon>mdi-minus</v-icon>
             </v-btn>
             
-            <span class="mx-3 text-body-1">{{ item.quantity }}</span>
+            <span class="mx-3 text-body-1">{{ item.stock }}</span>
             
             <v-btn
               icon
@@ -77,6 +77,36 @@
         </div>
       </div>
     </v-card>
+
+    <v-dialog v-model="showConfirmDialog" max-width="400">
+      <v-card>
+        <v-card-title class="text-h5">
+          Eliminar producto
+        </v-card-title>
+        <v-card-text>
+          ¿Estás seguro de que deseas eliminar "{{ item.product.name }}" del carrito?
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="grey-darken-1"
+            variant="text"
+            @click="showConfirmDialog = false"
+            :disabled="isRemoving"
+          >
+            Cancelar
+          </v-btn>
+          <v-btn
+            color="error"
+            variant="text"
+            @click="handleRemove"
+            :loading="isRemoving"
+          >
+            Eliminar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </template>
   
   <script setup lang="ts">
@@ -92,11 +122,12 @@
   
   const isUpdating = ref(false)
   const isRemoving = ref(false)
+  const showConfirmDialog = ref(false)
   
   const handleIncrement = async () => {
     isUpdating.value = true
     try {
-      await incrementQuantity(props.item.id, props.item.quantity)
+      await incrementQuantity(props.item.id, props.item.stock)
     } finally {
       isUpdating.value = false
     }
@@ -105,7 +136,7 @@
   const handleDecrement = async () => {
     isUpdating.value = true
     try {
-      await decrementQuantity(props.item.id, props.item.quantity)
+      await decrementQuantity(props.item.id, props.item.stock)
     } finally {
       isUpdating.value = false
     }
@@ -115,6 +146,7 @@
     isRemoving.value = true
     try {
       await removeFromCart(props.item.id)
+      showConfirmDialog.value = false
     } finally {
       isRemoving.value = false
     }

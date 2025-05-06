@@ -12,7 +12,7 @@ class ApiService {
     reject: (error: any) => void
   }> = []
 
-  private getHeaders(): HeadersInit {
+  private getHeaders(method: string = 'GET'): HeadersInit {
     const headers: HeadersInit = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -21,6 +21,17 @@ class ApiService {
     const token = getToken()
     if (token) {
       headers['Authorization'] = `Bearer ${token}`
+    }
+
+    // Agregar token CSRF para métodos que modifican datos
+    if (method !== 'GET') {
+      const csrfToken = document.cookie.split('; ')
+        .find(row => row.startsWith('XSRF-TOKEN='))
+        ?.split('=')[1]
+      
+      if (csrfToken) {
+        headers['X-XSRF-TOKEN'] = decodeURIComponent(csrfToken)
+      }
     }
 
     return headers
@@ -37,7 +48,7 @@ class ApiService {
           // Reintentamos la petición original con el nuevo token
           const retryResponse = await fetch(response.url, {
             method: originalMethod || 'GET',
-            headers: this.getHeaders(),
+            headers: this.getHeaders(originalMethod || 'GET'),
             body: originalMethod !== 'GET' ? response.body : undefined
           })  
           return this.handleResponse<T>(retryResponse)
@@ -107,7 +118,7 @@ class ApiService {
 
       const response = await fetch(url.toString(), {
         method: 'GET',
-        headers: this.getHeaders(),
+        headers: this.getHeaders('GET'),
       })
 
       return this.handleResponse<T>(response, 'GET')
@@ -120,7 +131,7 @@ class ApiService {
     try {
       const response = await fetch(`${API_BASE_URL}${endpoint}`, {
         method: 'POST',
-        headers: this.getHeaders(),
+        headers: this.getHeaders('POST'),
         body: JSON.stringify(data),
       })
 
@@ -134,7 +145,7 @@ class ApiService {
     try {
       const response = await fetch(`${API_BASE_URL}${endpoint}`, {
         method: 'PUT',
-        headers: this.getHeaders(),
+        headers: this.getHeaders('PUT'),
         body: JSON.stringify(data),
       })
 
@@ -148,7 +159,7 @@ class ApiService {
     try {
       const response = await fetch(`${API_BASE_URL}${endpoint}`, {
         method: 'DELETE',
-        headers: this.getHeaders(),
+        headers: this.getHeaders('DELETE'),
       })
 
       return this.handleResponse<T>(response, 'DELETE')

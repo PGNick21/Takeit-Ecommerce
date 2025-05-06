@@ -61,6 +61,7 @@
           <v-row no-gutters>
             <v-col cols="12">
               <h2 class="text-h5 mb-4">{{ $t('products.title') }}</h2>
+
               <product-grid 
                 :category-id="selectedCategoryId ?? undefined"
               />
@@ -114,7 +115,7 @@ const handleCategorySelected = (categoryId: string | null) => {
 
 <style scoped>
 .dashboard-container {
-  min-height: 100vh;
+  /* min-height: 100vh; */
   max-width: 100vw;
   overflow-x: hidden;
 }
